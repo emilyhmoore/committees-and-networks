@@ -1,10 +1,22 @@
-###
-###
-###First House
+######Note: Must load pscl ahead of time for this to work. 
+
 library(pscl)
+
+score.generator<-function(congress=1){
+    paster<-function(x){
+      if (x<10){x<-paste("0",x, sep="")} else {x<-as.character(x)}
+    } ##close paster function
+    entry<-sapply(congress, paster) ##gathers new entries
+    file<-paste("ftp://voteview.com/dtaord/hou",entry, "kh.ord", sep="")
+
+    house<-readKH(file) ##read in the file
+    n<-.025*house$n ##gets n for droping very lopsided votes
+    house<-dropUnanimous(house,lop=n)
+    return(head(house))
+}
+score.generator()
+
 house.1<-readKH("ftp://voteview.com/dtaord/hou01kh.ord")
-lopn<-.025*house.1$n
-lopn
 house.1<-dropUnanimous(house.1,lop=lopn)
 summary(house.1)
 
