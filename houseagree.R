@@ -54,7 +54,6 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
       names(vector)[i]<-paste(repped.names[i],enough.names[i],sep="_")
     }
     vector<-na.omit(vector)
-    
     G <- graph.adjacency(as.matrix(b),weighted=TRUE)
     ## And then this will calculate and display the centrality scores
     centrality<-alpha.centrality(G)
