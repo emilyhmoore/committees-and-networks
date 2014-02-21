@@ -7,13 +7,10 @@ library(igraph)
 ##the ability to run multiple at the same time. 
 
 score.generator<-function(congress=1, abstain.agree=TRUE){
-  ##Function to paste a 0 in front of numbers 1-9 for url
-    paster<-function(x){
-      if (x<10){x<-paste("0",x, sep="")} else {x<-as.character(x)}
-    } ##close paster function
-    ##entry will give you the proper congress numer
-    entry<-sapply(congress, paster) ##gathers new entries
-    file<-paste("ftp://voteview.com/dtaord/hou",entry, "kh.ord", sep="")
+  ##Congress needs to be altered to have a 0 in front if less than 10
+      if (congress<10){congress<-paste("0",congress, sep="")
+      } else {congress<-as.character(congress)}
+    file<-paste("ftp://voteview.com/dtaord/hou",congress, "kh.ord", sep="")
 
     house<-readKH(file) ##read in the file
     n<-.025*house$n ##gets n for droping very lopsided votes
@@ -54,7 +51,7 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
     diag(a)<-NA
     vector<-unlist(a)
     for(i in 1:length(vector)){
-      names(vector)[i]<-paste(enough.names[i],repped.names[i],sep="_")
+      names(vector)[i]<-paste(repped.names[i],enough.names[i],sep="_")
     }
     vector<-na.omit(vector)
     
@@ -65,12 +62,10 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
     return(list("agreement.scores"=vector, "centrality.scores"=centrality))
 }
 
-trial2<-score.generator(abstain.agree=FALSE)
-trial<-score.generator(abstain.agree=TRUE)
-head(trial, 20)
-head(trial2, 20)
-head(trial2$centrality.scores)
-head(trial$centrality.scores)
+trial2<-score.generator(congress=10,abstain.agree=FALSE)
+trial<-score.generator(congress=10, abstain.agree=TRUE)
+head(trial2$agreement.scores)
+head(trial$agreement.scores)
 
 #a.h1 <- as.data.frame(pairdata_full)
 #colnames(a.h1) <- c("rc_agree")
