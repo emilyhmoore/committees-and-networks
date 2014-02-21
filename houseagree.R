@@ -5,7 +5,7 @@ library(pscl)
 ##Will increase functionality to include option for house or senate and
 ##the ability to run multiple at the same time. 
 
-score.generator<-function(congress=2, abstain.agree=TRUE){
+score.generator<-function(congress=1, abstain.agree=TRUE){
     paster<-function(x){
       if (x<10){x<-paste("0",x, sep="")} else {x<-as.character(x)}
     } ##close paster function
@@ -47,20 +47,19 @@ score.generator<-function(congress=2, abstain.agree=TRUE){
     just.names<-legnames1[odds]
     n<-length(just.names)
     enough.names<-rep(just.names,n)
-    
+    repped.names<-rep(just.names,c(rep(n,n)))
     diag(a)<-NA
     vector<-unlist(a)
-    
     for(i in 1:length(vector)){
-      names(vector)<-paste(enough.names[i],enough.names,sep="_")
+      names(vector)[i]<-paste(enough.names[i],repped.names[i],sep="_")
     }
     vector<-na.omit(vector)
     return(vector)
 }
 
-trial<-score.generator()
-head(trial)
-
+trial2<-score.generator(abstain.agree=FALSE)
+head(trial, 20)
+head(trial2, 20)
 
 a.h1 <- as.data.frame(pairdata_full)
 colnames(a.h1) <- c("rc_agree")
