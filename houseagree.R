@@ -1,14 +1,17 @@
 ######Note: Must load pscl ahead of time for this to work. 
-
+##Load the packages
 library(pscl)
+library(igraph)
 ##can currently only accept one congress for one chamber at a time
 ##Will increase functionality to include option for house or senate and
 ##the ability to run multiple at the same time. 
 
 score.generator<-function(congress=1, abstain.agree=TRUE){
+  ##Function to paste a 0 in front of numbers 1-9 for url
     paster<-function(x){
       if (x<10){x<-paste("0",x, sep="")} else {x<-as.character(x)}
     } ##close paster function
+    ##entry will give you the proper congress numer
     entry<-sapply(congress, paster) ##gathers new entries
     file<-paste("ftp://voteview.com/dtaord/hou",entry, "kh.ord", sep="")
 
@@ -40,6 +43,7 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
       return(data)
     }
     a<-agree.mat(h.1)
+    b<-agree.mat(h.1)
     legnames<-rownames(a)
     legnames1<-unlist(strsplit(legnames,split=" \\("))
     odds<-seq(1,length(legnames1), by=2)
@@ -53,34 +57,28 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
       names(vector)[i]<-paste(enough.names[i],repped.names[i],sep="_")
     }
     vector<-na.omit(vector)
-    return(vector)
+    
+    G <- graph.adjacency(as.matrix(b),weighted=TRUE)
+    ## And then this will calculate and display the centrality scores
+    centrality<-alpha.centrality(G)
+    #plot(density.default(x=alpha.centrality(G)))
+    return(list("agreement.scores"=vector, "centrality.scores"=centrality))
 }
 
 trial2<-score.generator(abstain.agree=FALSE)
 trial<-score.generator(abstain.agree=TRUE)
 head(trial, 20)
 head(trial2, 20)
+head(trial2$centrality.scores)
+head(trial$centrality.scores)
 
-a.h1 <- as.data.frame(pairdata_full)
-colnames(a.h1) <- c("rc_agree")
-library(foreign)
-write.dta(a.h1,"agreefirsthouse.dta")
-head(a.h1)
-head(data)
-summary(data)
-
-##ALpha Centrality
-
-require(igraph)
-## First we create a graph object from the adjacency matrix (the percentage of agreements). The "weighted" argument says that the cell entries indicate the weight of the edges.
-G <- graph.adjacency(A,weighted=TRUE)
-## And then this will calculate and display the centrality scores
-alpha.centrality(G)
-## Match up the scores to the vector of names
-centrality.h1 <- alpha.centrality(G)
+#a.h1 <- as.data.frame(pairdata_full)
+#colnames(a.h1) <- c("rc_agree")
+#library(foreign)
+#write.dta(a.h1,"agreefirsthouse.dta")
 ## Export the dataset
-write.dta(as.data.frame(centrality.h1),"centrality_h1.dta")
-plot(density.default(x=alpha.centrality(G)))
+#write.dta(as.data.frame(centrality.h1),"centrality_h1.dta")
+
 
 
 ##### Comparisons between Houses ###########
