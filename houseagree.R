@@ -20,11 +20,11 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
     h.1[h.1==0]<-NA ##Converting 0s to NAs
     h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
     legnames<-rownames(h.1)
-    agree.mat <- function(X, abstain.agree=TRUE){
+    agree.mat <- function(X, abstain=abstain.agree){
       X <- t(X) # put subjects on columns
       n <- ncol(X)
       A <- matrix(NA, n, n)
-      if(abstain.agree==TRUE){
+      if(abstain==TRUE){
         for (i in 1:n){
         A[i,] <- apply(X[,i] == X, 2, sum)
         }
@@ -33,7 +33,6 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
         A[i,] <- apply(X[,i] == X & X!=9, 2, sum)
         }
       }
-      A <- A
       rownames(A)<-legnames
       colnames(A)<-legnames
       A <- A/ncol(h.1)
@@ -58,6 +57,7 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
 }
 
 trial2<-score.generator(abstain.agree=FALSE)
+trial<-score.generator(abstain.agree=TRUE)
 head(trial, 20)
 head(trial2, 20)
 
