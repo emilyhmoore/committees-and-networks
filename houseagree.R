@@ -1,8 +1,11 @@
 ######Note: Must load pscl ahead of time for this to work. 
 
 library(pscl)
+##can currently only accept one congress for one chamber at a time
+##Will increase functionality to include option for house or senate and
+##the ability to run multiple at the same time. 
 
-score.generator<-function(congress=1){
+score.generator<-function(congress=2, abstain.agree=TRUE){
     paster<-function(x){
       if (x<10){x<-paste("0",x, sep="")} else {x<-as.character(x)}
     } ##close paster function
@@ -12,59 +15,41 @@ score.generator<-function(congress=1){
     house<-readKH(file) ##read in the file
     n<-.025*house$n ##gets n for droping very lopsided votes
     house<-dropUnanimous(house,lop=n)
-    return(head(house))
+    h.1<-house$votes ##First Congress Roll Call Votes
+    h.1<-h.1[-1,] ##Dropping President
+    h.1[h.1==0]<-NA ##Converting 0s to NAs
+    h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
+    legnames<-rownames(h.1)
+    
+    agree.mat <- function(X, abstain.agree=TRUE){
+      X <- t(X) # put subjects on columns
+      n <- ncol(X)
+      A <- matrix(NA, n, n)
+      if(abstain.agree==TRUE){
+        for (i in 1:n){
+        A[i,] <- apply(X[,i] == X, 2, sum)
+        }
+      }else{
+        for (i in 1:n){
+        A[i,] <- apply(X[,i] == X & X!=9, 2, sum)
+        }
+      }
+      A <- A
+      rownames(A)<-legnames
+      colnames(A)<-legnames
+      A <- A/ncol(h.1)
+      data <- as.data.frame(A)
+      return(data)
+    }
+    a<-agree.mat(h.1)
+    return(head(a))
 }
 score.generator()
 
-house.1<-readKH("ftp://voteview.com/dtaord/hou01kh.ord")
-house.1<-dropUnanimous(house.1,lop=lopn)
-summary(house.1)
 
-h.1<-house.1$votes ##First Congress Roll Call Votes
-h.1<-h.1[2:nrow(h.1),] ##Dropping President
-h.1[h.1==0]<-NA ##Converting 0s to NAs
-h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
-
-legnames<-as.matrix(rownames(h.1))
-legnames
-
-agree.mat <- function(X){
-  
-  X <- t(X) # put subjects on columns
-  n <- ncol(X)
-  A <- matrix(NA, n, n)
-  for (i in 1:n){
-    A[i,] <- apply(X[,i] == X & X!=9, 2, sum)
-  }
-  A <- A
-  return(A)
-}
-
-##This is a shortened example to see how the code is working.
-##Appears to be working properly. 
-##I show the pure votes, then the calculated agreement scores, 
-##which seem to be correct if we restrict attention to first five votes
-agt<-agree.mat(head(h.1[,1:5]))
-rownames(agt)<-rownames(head(h.1[,1:5]))
-colnames(agt)<-rownames(head(h.1[,1:5]))
-agt.1<-agt/ncol(head(h.1[,1:5]))
-agt.1
-head(h.1[,1:5])
-##^Just looking at first five votes and first six 
-##legislators to make sure counts are right
-
-Ano <- agree.mat(h.1) ##For all 107 votes in first House
-rownames(Ano)<-rownames(h.1)
-colnames(Ano)<-rownames(h.1)
-
-A <- Ano/ncol(h.1) ##percentage of times they agree
-
-data <- as.data.frame(A) ##First Congress agreement scores as data frame
+ ##First Congress agreement scores as data frame
 
 n <- length(data)
-
-head(data)##look at agreement scores with names listed
-dimnames(data)
 # Make an empty vector
 pairdata_full <- matrix(NA,(n*(n-1)/2),1)
 pairdata <- (data[(1+1):n,1])
