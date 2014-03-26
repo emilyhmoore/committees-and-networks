@@ -2,15 +2,20 @@
 ##Load the packages
 library(pscl)
 library(igraph)
-##can currently only accept one congress for one chamber at a time
-##Will increase functionality to include option for house or senate and
-##the ability to run multiple at the same time. 
 
-score.generator<-function(congress=1, abstain.agree=TRUE){
+##can currently only accept one congress for one chamber at a time
+
+score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   ##Congress needs to be altered to have a 0 in front if less than 10
   if (congress<10){congress<-paste("0",congress, sep="")
   } else {congress<-as.character(congress)}
+  
+  ##Path deciding whether to load up senate or house
+  if(senate==FALSE){
   file<-paste("ftp://voteview.com/dtaord/hou",congress, "kh.ord", sep="")
+  } else {
+    file<-paste("ftp://voteview.com/dtaord/sen",congress, "kh.ord", sep="")
+  }
   
   house<-readKH(file) ##read in the file
   n<-.025*house$n ##gets n for droping very lopsided votes
@@ -61,11 +66,14 @@ score.generator<-function(congress=1, abstain.agree=TRUE){
   return(list("agreement.scores"=vector, "centrality.scores"=centrality))
 }
 
-trial2<-score.generator(congress=10,abstain.agree=FALSE)
-trial<-score.generator(congress=10, abstain.agree=TRUE)
-head(trial2$agreement.scores)
-head(trial$agreement.scores)
+##Try out the function
+trial2<-score.generator(congress=1,abstain.agree=FALSE, senate=TRUE)
+trial3<-score.generator(congress=1,abstain.agree=FALSE, senate=FALSE)
+trial4<-score.generator(congress=10, abstain.agree=TRUE, senate=TRUE)
+trial4<-score.generator(congress=10, abstain.agree=TRUE, senate=FALSE)
 
+agree<-trial3$agreement.scores
+str(agree)
 #a.h1 <- as.data.frame(pairdata_full)
 #colnames(a.h1) <- c("rc_agree")
 #library(foreign)
