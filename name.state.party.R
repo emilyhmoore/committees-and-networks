@@ -34,3 +34,56 @@ name.state<-function(x){
 ##1-5 are fine. Will need to fix 6, 7-21 is fine. 22 needs work.
 cong.names.states<-llply(congress.names, name.state)
 cong.names.states
+setwd("C:/Users/emily m/Journal Articles/Committees and Networks")
+library(foreign)
+stewart.data<-read.dta("Stewart House committees.dta")
+index<-which(stewart.data$cong<28)
+stewart.data<-stewart.data[index,]
+stewart.data$partystring<-stewart.data$party
+
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==5000), 
+                                  "Pro-Administration")
+
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==200), 
+                                  "Republican")
+
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==100), 
+                                  "Democrat")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==4000), 
+                                  "Anti-Administration")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==1), 
+                                  "Federalist")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==7777), 
+                                  "Crawford Republican")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==8888), 
+                                  "Adams-Clay Republican")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==1346), 
+                                  "Jackson Republican")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==8000), 
+                                  "Adams-Clay Federalist")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==7000), 
+                                  "Jackson Federalist")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==6000), 
+                                  "Crawford Federalist ")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==555), 
+                                  "Jackson")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==22), 
+                                  "Adams")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==1275), 
+                                  "Anti-Jackson")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==26), 
+                                  "Anti-Masonic")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==44), 
+                                  "Nullifier")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==29), 
+                                  "Whig")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==104), 
+                                  "Van Buren Democrat")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==328), 
+                                  "Independent")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==112), 
+                                  "Conservative")
+stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==329), 
+                                  "Ind. Democrat")
+unique(stewart.data$partystring)
+
