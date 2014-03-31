@@ -26,6 +26,7 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
   
   legnames<-rownames(h.1)
+  thenames<-rownames(h.1)
   agree.mat <- function(X, abstain=abstain.agree){
     X <- t(X) # put subjects on columns
     n <- ncol(X)
@@ -85,8 +86,9 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   ## And then this will calculate and display the centrality scores
   centrality<-alpha.centrality(G)
 
-  return(list("agreement.scores"=vector1, "centrality.scores"=centrality))
+  return(list("agreement.scores"=vector1, "centrality.scores"=centrality, "names"=thenames))
 }
+
 
 ##Try out the function
 trial2<-score.generator(congress=1,abstain.agree=FALSE, senate=TRUE)
@@ -96,6 +98,7 @@ trial5<-score.generator(congress=1, abstain.agree=TRUE, senate=FALSE)
 
 agree<-trial3$agreement.scores
 agree2<-trial5$agreement.scores
+
 
 plot(density(agree), col="red") ##any abstention auto treated as disagreement 
 lines(density(agree2), col="blue") ##two abstains treated as agreements
