@@ -3,8 +3,13 @@
 library(pscl)
 library(igraph)
 
-##can currently only accept one congress for one chamber at a time
+#########IMPORTANT NOTE!!!!!!!!!!!!!!!!!!!!!! There are two different presidents listed 
+#########for congress #27, so you will need to get rid of both!
 
+
+##can currently only accept one congress for one chamber at a time
+congress=27
+senate=FALSE
 score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   ##Congress needs to be altered to have a 0 in front if less than 10
   if (congress<10){congress<-paste("0",congress, sep="")
@@ -16,12 +21,14 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   } else {
     file<-paste("ftp://voteview.com/dtaord/sen",congress, "kh.ord", sep="")
   }
-  
+
   house<-readKH(file) ##read in the file
   n<-.025*house$n ##gets n for dropping very lopsided votes
   house<-dropUnanimous(house,lop=n)
   h.1<-house$votes ##Roll Call Votes
+  h.1
   h.1<-h.1[-1,] ##Dropping President
+  if(congress==27){h.1<-h.1[-1,]}
   h.1[h.1==0]<-NA ##Converting 0s to NAs
   h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
   

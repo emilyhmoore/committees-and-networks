@@ -6,12 +6,16 @@ cong.names<-function(i){
 
   congress.names<-llply(1:27, cong.names)
 congress.names
-
+cong.names(27)
 congress.names[[1]][48]<-"MUHLENGBRG (NA PA-98)"
 congress.names[[6]][6]<-"GOODRICH (Federalist CT-98)"
 congress.names[[22]]<-gsub(pattern="Anti-Masonic", replacement="AntiMasonic",congress.names[[22]])
 congress.names[[23]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[23]])
 congress.names[[24]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[24]])
+congress.names[[25]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[25]])
+congress.names[[26]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[26]])
+congress.names[[27]]<-cong.names(27)
+congress.names[[27]][19]<-"CASEY (Ind.Democrat IL-2)"
 
 name.state<-function(x){
   
@@ -28,4 +32,5 @@ name.state<-function(x){
   return(data)
 }
 ##1-5 are fine. Will need to fix 6, 7-21 is fine. 22 needs work.
-name.state(congress.names[[24]])
+cong.names.states<-llply(congress.names, name.state)
+cong.names.states
