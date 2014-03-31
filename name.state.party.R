@@ -85,5 +85,19 @@ stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.d
                                   "Conservative")
 stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==329), 
                                   "Ind. Democrat")
-unique(stewart.data$partystring)
 
+lastnames<-unlist(strsplit(stewart.data$name, split=","))[seq(1,(6293*2), by=2)]
+
+stewart.data$lastnames<-lastnames
+head(stewart.data)
+
+seps<-function(i){
+  houses<-list()
+  length(houses)<-1
+  names<-paste("stew", 1:27, sep="")
+  names(houses)<-names[i]
+  houses<-stewart.data[which(stewart.data$cong==i),]
+  return(houses)
+}
+trial<-llply(1:27, seps)
+trial[[27]]
