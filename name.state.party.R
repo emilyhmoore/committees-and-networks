@@ -1,6 +1,63 @@
 ##Takes a returned name vector from the previous function and returns a matrix of names and states
 library(plyr)
+library(pscl)
+cong1<-(readKH("ftp://voteview.com/dtaord/hou01kh.ord"))
+cong1$legis.data
 
+names.states1<-function(congress=1, senate){
+  ##Congress needs to be altered to have a 0 in front if less than 10
+  if (congress<10){congress<-paste("0",congress, sep="")
+  } else {congress<-as.character(congress)}
+  
+  ##Path deciding whether to load up senate or house
+  if(senate==FALSE){
+    file<-paste("ftp://voteview.com/dtaord/hou",congress, "kh.ord", sep="")
+  } else {
+    file<-paste("ftp://voteview.com/dtaord/sen",congress, "kh.ord", sep="")
+  }
+  
+  house<-readKH(file) ##read in the file
+  h.1<-house$legis.data ##Roll Call Votes
+  h.1<-h.1[-1,] ##Dropping President
+  if(congress==27){h.1<-h.1[-1,]}
+  return(h.1)}
+
+cong<-llply(1:27, names.states1, senate=FALSE)
+
+for (i in 1:27){cong[[i]]$state<-as.character(cong[[i]]$state)
+}
+
+setwd("C:/Users/emily m/Journal Articles/Committees and Networks")
+
+yr1790<-read.dta("1790.dta")
+popdata.1790<-yr1790[yr1790$level==2,]
+
+yr1800<-read.dta("1800.dta")
+popdata.1800<-yr1800[yr1800$level==2,]
+
+yr1810<-read.dta("1810.dta")
+popdata.1810<-yr1810[yr1810$level==2,]
+
+yr1820<-read.dta("1820.dta")
+popdata.1820<-yr1820[yr1820$level==2,]
+
+yr1830<-read.dta("1830.dta")
+popdata.1830<-yr1830[yr1830$level==2,]
+
+yr1840<-read.dta("1840.dta")
+popdata.1840<-yr1840[yr1840$level==2,]
+
+states<-cbind(name=toupper(state.name),state.abb,state.division=as.character(state.division))
+
+popdata.1790<-merge(states, popdata.1790, stringsAsFactors=FALSE)
+colnames(popdata.1790)[c(1,4)]<-c("state", "fullstate")
+
+firsthouse<-merge(cong[[1]], popdata.1790, by="state")
+firsthouse<-(firsthouse[-c(8:11)])
+firsthouse
+
+
+##OUtdated. May need later, so keeping. Use above code. 
 cong.names<-function(i){
   score.generator(congress=i, TRUE, senate=FALSE)$names}
 
@@ -34,7 +91,8 @@ name.state<-function(x){
 ##1-5 are fine. Will need to fix 6, 7-21 is fine. 22 needs work.
 cong.names.states<-llply(congress.names, name.state)
 cong.names.states
-setwd("C:/Users/emily m/Journal Articles/Committees and Networks")
+
+##Stewart Data stuff
 library(foreign)
 stewart.data<-read.dta("Stewart House committees.dta")
 index<-which(stewart.data$cong<28)
