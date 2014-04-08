@@ -1,8 +1,6 @@
 ##Takes a returned name vector from the previous function and returns a matrix of names and states
 library(plyr)
 library(pscl)
-cong1<-(readKH("ftp://voteview.com/dtaord/hou01kh.ord"))
-cong1$legis.data
 
 names.states1<-function(congress=1, senate){
   ##Congress needs to be altered to have a 0 in front if less than 10
@@ -24,10 +22,11 @@ names.states1<-function(congress=1, senate){
 
 ##this creates a list of all the congresses
 cong<-llply(1:27, names.states1, senate=FALSE)
+sen<-llply(1:27, names.states1, senate=TRUE)
 
 ##This makes each state a character instead of a factor
-for (i in 1:27){cong[[i]]$state<-as.character(cong[[i]]$state)
-}
+for (i in 1:27){cong[[i]]$state<-as.character(cong[[i]]$state)}
+for (i in 1:27){sen[[i]]$state<-as.character(sen[[i]]$state)}
 
 setwd("C:/Users/emily m/Journal Articles/Committees and Networks")
 library(foreign)
@@ -74,31 +73,76 @@ colnames(d1840)[c(1,2,4)]<-
   colnames(d1790)[c(1,2,4)]<-c("fullstatename", "state", "statecode")
 
 
-##telling the first congress list to contain the list of members as a column not just row names.
-cong[[1]]$members<-rownames(cong[[1]])
+##telling the congress lists to contain the list of members as a column not just row names.
 
-cong[[6]]$members<-rownames(cong[[6]])
-
-cong[[11]]$members<-rownames(cong[[11]])
-
-cong[[16]]$members<-rownames(cong[[16]])
-
-cong[[21]]$members<-rownames(cong[[21]])
-
-cong[[26]]$members<-rownames(cong[[26]])
+for (i in 1:27){
+  cong[[i]]$members<-rownames(cong[[i]])
+  sen[[i]]$members<-rownames(sen[[i]])
+}
 
 ##merging the state pop data to the congress member data
-firsthouse<-merge(cong[[1]], d1790, by="state")
+house1<-merge(cong[[1]], d1790, by="state")
+senate1<-merge(sen[[1]], d1790, by="state")
+house2<-merge(cong[[2]], d1790, by="state")
+senate2<-merge(sen[[2]], d1790, by="state")
+house3<-merge(cong[[3]], d1790, by="state")
+senate3<-merge(sen[[3]], d1790, by="state")
+house4<-merge(cong[[4]], d1790, by="state")
+senate4<-merge(sen[[4]], d1790, by="state")
+house5<-merge(cong[[5]], d1790, by="state")
+senate5<-merge(sen[[5]], d1790, by="state")
+house6<-merge(cong[[6]], d1790, by="state")
+senate6<-merge(sen[[6]], d1790, by="state")
 
-sixthhouse<-merge(cong[[6]], d1800, by="state")
+house7<-merge(cong[[7]], d1800, by="state")
+senate7<-merge(sen[[7]], d1800, by="state")
+house8<-merge(cong[[8]], d1800, by="state")
+senate8<-merge(sen[[8]], d1800, by="state")
+house9<-merge(cong[[9]], d1800, by="state")
+senate9<-merge(sen[[9]], d1800, by="state")
+house10<-merge(cong[[10]], d1800, by="state")
+senate10<-merge(sen[[10]], d1800, by="state")
+house11<-merge(cong[[11]], d1800, by="state")
+senate11<-merge(sen[[11]], d1800, by="state")
 
-eleventhhouse<-merge(cong[[11]], d1810, by="state")
 
-sixteenthhouse<-merge(cong[[16]], d1820)
+house12<-merge(cong[[12]], d1810, by="state")
+senate12<-merge(sen[[12]], d1810, by="state")
+house13<-merge(cong[[13]], d1810, by="state")
+senate13<-merge(sen[[13]], d1810, by="state")
+house14<-merge(cong[[14]], d1810, by="state")
+senate14<-merge(sen[[14]], d1810, by="state")
+house15<-merge(cong[[15]], d1810, by="state")
+senate15<-merge(sen[[15]], d1810, by="state")
+house16<-merge(cong[[16]], d1810, by="state")
+senate16<-merge(sen[[16]], d1810, by="state")
 
-twfirsthouse<-merge(cong[[21]], d1830)
+house17<-merge(cong[[17]], d1820, by="state")
+senate17<-merge(sen[[17]], d1820, by="state")
+house18<-merge(cong[[18]], d1820, by="state")
+senate18<-merge(sen[[18]], d1820, by="state")
+house19<-merge(cong[[19]], d1820, by="state")
+senate19<-merge(sen[[19]], d1820, by="state")
+house20<-merge(cong[[20]], d1820, by="state")
+senate20<-merge(sen[[20]], d1820, by="state")
+house21<-merge(cong[[21]], d1820, by="state")
+senate21<-merge(sen[[21]], d1820, by="state")
 
-twsixthhouse<-merge(cong[[26]], d1840)
+
+house22<-merge(cong[[22]], d1830)
+senate22<-merge(sen[[22]], d1830)
+house23<-merge(cong[[23]], d1830)
+senate23<-merge(sen[[23]], d1830)
+house24<-merge(cong[[24]], d1830)
+senate24<-merge(sen[[24]], d1830)
+house25<-merge(cong[[25]], d1830)
+senate25<-merge(sen[[25]], d1830)
+house26<-merge(cong[[26]], d1830)
+senate26<-merge(sen[[26]], d1830)
+
+
+house27<-merge(cong[[27]], d1840)
+senate27<-merge(sen[[27]], d1840)
 
 ##delete some useless columns
 firsthouse<-(firsthouse[-c(8:11)])
@@ -109,113 +153,65 @@ twfirsthouse<-twfirsthouse[-c(8)]
 twsixthhouse<-twsixthhouse[-c(8)]
 
 ##make the members names the first column. 
-firsthouse<-cbind(firsthouse$members, firsthouse[,-7])
-sixthhouse<-cbind(sixthhouse$members, sixthhouse[,-7])
-eleventhhouse<-cbind(eleventhhouse$members, eleventhhouse[,-7])
-sixteenthhouse<-cbind(sixteenthhouse$members, sixteenthhouse[,-7])
-twfirsthouse<-cbind(twfirsthouse$members, twfirsthouse[,-7])
-twsixthhouse<-cbind(twsixthhouse$members, twsixthhouse[,-7])
 
-
-##OUtdated. May need later, so keeping. Use above code. 
-cong.names<-function(i){
-  score.generator(congress=i, TRUE, senate=FALSE)$names}
-
-  congress.names<-llply(1:27, cong.names)
-congress.names
-cong.names(27)
-congress.names[[1]][48]<-"MUHLENGBRG (NA PA-98)"
-congress.names[[6]][6]<-"GOODRICH (Federalist CT-98)"
-congress.names[[22]]<-gsub(pattern="Anti-Masonic", replacement="AntiMasonic",congress.names[[22]])
-congress.names[[23]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[23]])
-congress.names[[24]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[24]])
-congress.names[[25]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[25]])
-congress.names[[26]]<-gsub(pattern="Anti Masonic", replacement="AntiMasonic",congress.names[[26]])
-congress.names[[27]]<-cong.names(27)
-congress.names[[27]][19]<-"CASEY (Ind.Democrat IL-2)"
-
-name.state<-function(x){
-  
-  cong1.state<-unlist(strsplit(x, " "))
-  
-  cong1.state<-unlist(strsplit(cong1.state, "-"))
-  
-  by.two<-seq(1, length(cong1.state), by=2)
-  
-  list<-cong1.state[by.two]
-  
-  data<-matrix(list, ncol=2, byrow=TRUE)
-  colnames(data)<-c("names", "state")
-  return(data)
+namesfirst<-function(x){
+  x<-cbind(x$members, x[,-7])
+  return(x)
 }
-##1-5 are fine. Will need to fix 6, 7-21 is fine. 22 needs work.
-cong.names.states<-llply(congress.names, name.state)
-cong.names.states
 
-##Stewart Data stuff
-library(foreign)
-stewart.data<-read.dta("Stewart House committees.dta")
-index<-which(stewart.data$cong<28)
-stewart.data<-stewart.data[index,]
-stewart.data$partystring<-stewart.data$party
+house1<-namesfirst(house1)
+house2<-namesfirst(house2)
+house3<-namesfirst(house3)
+house4<-namesfirst(house4)
+house5<-namesfirst(house5)
+house6<-namesfirst(house6)
+house7<-namesfirst(house7)
+house8<-namesfirst(house8)
+house9<-namesfirst(house9)
+house10<-namesfirst(house10)
+house11<-namesfirst(house11)
+house12<-namesfirst(house12)
+house13<-namesfirst(house13)
+house14<-namesfirst(house14)
+house15<-namesfirst(house15)
+house16<-namesfirst(house16)
+house17<-namesfirst(house17)
+house18<-namesfirst(house18)
+house19<-namesfirst(house19)
+house20<-namesfirst(house20)
+house21<-namesfirst(house21)
+house22<-namesfirst(house22)
+house23<-namesfirst(house23)
+house24<-namesfirst(house24)
+house25<-namesfirst(house25)
+house26<-namesfirst(house26)
+house27<-namesfirst(house27)
 
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==5000), 
-                                  "Pro-Administration")
+senate1<-namesfirst(senate1)
+senate2<-namesfirst(senate2)
+senate3<-namesfirst(senate3)
+senate4<-namesfirst(senate4)
+senate5<-namesfirst(senate5)
+senate6<-namesfirst(senate6)
+senate7<-namesfirst(senate7)
+senate8<-namesfirst(senate8)
+senate9<-namesfirst(senate9)
+senate10<-namesfirst(senate10)
+senate11<-namesfirst(senate11)
+senate12<-namesfirst(senate12)
+senate13<-namesfirst(senate13)
+senate14<-namesfirst(senate14)
+senate15<-namesfirst(senate15)
+senate16<-namesfirst(senate16)
+senate17<-namesfirst(senate17)
+senate18<-namesfirst(senate18)
+senate19<-namesfirst(senate19)
+senate20<-namesfirst(senate20)
+senate21<-namesfirst(senate21)
+senate22<-namesfirst(senate22)
+senate23<-namesfirst(senate23)
+senate24<-namesfirst(senate24)
+senate25<-namesfirst(senate25)
+senate26<-namesfirst(senate26)
+senate27<-namesfirst(senate27)
 
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==200), 
-                                  "Republican")
-
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==100), 
-                                  "Democrat")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==4000), 
-                                  "Anti-Administration")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==1), 
-                                  "Federalist")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==7777), 
-                                  "Crawford Republican")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==8888), 
-                                  "Adams-Clay Republican")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==1346), 
-                                  "Jackson Republican")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==8000), 
-                                  "Adams-Clay Federalist")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==7000), 
-                                  "Jackson Federalist")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==6000), 
-                                  "Crawford Federalist ")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==555), 
-                                  "Jackson")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==22), 
-                                  "Adams")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==1275), 
-                                  "Anti-Jackson")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==26), 
-                                  "Anti-Masonic")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==44), 
-                                  "Nullifier")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==29), 
-                                  "Whig")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==104), 
-                                  "Van Buren Democrat")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==328), 
-                                  "Independent")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==112), 
-                                  "Conservative")
-stewart.data$partystring<-replace(stewart.data$partystring, list=which(stewart.data$partystring==329), 
-                                  "Ind. Democrat")
-
-lastnames<-unlist(strsplit(stewart.data$name, split=","))[seq(1,(6293*2), by=2)]
-
-stewart.data$lastnames<-lastnames
-head(stewart.data)
-
-seps<-function(i){
-  houses<-list()
-  length(houses)<-1
-  names<-paste("stew", 1:27, sep="")
-  names(houses)<-names[i]
-  houses<-stewart.data[which(stewart.data$cong==i),]
-  return(houses)
-}
-trial<-llply(1:27, seps)
-trial[[27]]
