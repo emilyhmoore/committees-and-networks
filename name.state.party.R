@@ -22,13 +22,15 @@ names.states1<-function(congress=1, senate){
   if(congress==27){h.1<-h.1[-1,]}
   return(h.1)}
 
+##this creates a list of all the congresses
 cong<-llply(1:27, names.states1, senate=FALSE)
 
+##This makes each state a character instead of a factor
 for (i in 1:27){cong[[i]]$state<-as.character(cong[[i]]$state)
 }
 
 setwd("C:/Users/emily m/Journal Articles/Committees and Networks")
-
+library(foreign)
 yr1790<-read.dta("1790.dta")
 popdata.1790<-yr1790[yr1790$level==2,]
 
@@ -47,14 +49,72 @@ popdata.1830<-yr1830[yr1830$level==2,]
 yr1840<-read.dta("1840.dta")
 popdata.1840<-yr1840[yr1840$level==2,]
 
+##Takes R's built in state information
 states<-cbind(name=toupper(state.name),state.abb,state.division=as.character(state.division))
 
-popdata.1790<-merge(states, popdata.1790, stringsAsFactors=FALSE)
-colnames(popdata.1790)[c(1,4)]<-c("state", "fullstate")
+##This is the state data matched with the population data.
+d1790<-merge(states, popdata.1790, stringsAsFactors=FALSE)
 
-firsthouse<-merge(cong[[1]], popdata.1790, by="state")
+d1800<-merge(states, popdata.1800, stringsAsFactors=FALSE)
+
+d1810<-merge(states, popdata.1810, stringsAsFactors=FALSE)
+
+d1820<-merge(states, popdata.1820, stringsAsFactors=FALSE)
+
+d1830<-merge(states, popdata.1830, stringsAsFactors=FALSE)
+
+d1840<-merge(states, popdata.1840, stringsAsFactors=FALSE)
+
+##Changing the column names so they're unique. 
+colnames(d1840)[c(1,2,4)]<-
+  colnames(d1830)[c(1,2,4)]<-
+  colnames(d1820)[c(1,2,4)]<-
+  colnames(d1810)[c(1,2,4)]<-
+  colnames(d1800)[c(1,2,4)]<-
+  colnames(d1790)[c(1,2,4)]<-c("fullstatename", "state", "statecode")
+
+
+##telling the first congress list to contain the list of members as a column not just row names.
+cong[[1]]$members<-rownames(cong[[1]])
+
+cong[[6]]$members<-rownames(cong[[6]])
+
+cong[[11]]$members<-rownames(cong[[11]])
+
+cong[[16]]$members<-rownames(cong[[16]])
+
+cong[[21]]$members<-rownames(cong[[21]])
+
+cong[[26]]$members<-rownames(cong[[26]])
+
+##merging the state pop data to the congress member data
+firsthouse<-merge(cong[[1]], d1790, by="state")
+
+sixthhouse<-merge(cong[[6]], d1800, by="state")
+
+eleventhhouse<-merge(cong[[11]], d1810, by="state")
+
+sixteenthhouse<-merge(cong[[16]], d1820)
+
+twfirsthouse<-merge(cong[[21]], d1830)
+
+twsixthhouse<-merge(cong[[26]], d1840)
+
+##delete some useless columns
 firsthouse<-(firsthouse[-c(8:11)])
-firsthouse
+sixthhouse<-sixthhouse[-c(8)]
+eleventhhouse<-eleventhhouse[-c(8)]
+sixteenthhouse<-sixteenthhouse[-c(8)]
+twfirsthouse<-twfirsthouse[-c(8)]
+twsixthhouse<-twsixthhouse[-c(8)]
+
+##make the members names the first column. 
+firsthouse<-cbind(firsthouse$members, firsthouse[,-7])
+sixthhouse<-cbind(sixthhouse$members, sixthhouse[,-7])
+eleventhhouse<-cbind(eleventhhouse$members, eleventhhouse[,-7])
+sixteenthhouse<-cbind(sixteenthhouse$members, sixteenthhouse[,-7])
+twfirsthouse<-cbind(twfirsthouse$members, twfirsthouse[,-7])
+twsixthhouse<-cbind(twsixthhouse$members, twsixthhouse[,-7])
 
 
 ##OUtdated. May need later, so keeping. Use above code. 
