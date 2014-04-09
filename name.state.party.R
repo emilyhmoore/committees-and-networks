@@ -144,18 +144,11 @@ senate26<-merge(sen[[26]], d1830)
 house27<-merge(cong[[27]], d1840)
 senate27<-merge(sen[[27]], d1840)
 
-##delete some useless columns
-firsthouse<-(firsthouse[-c(8:11)])
-sixthhouse<-sixthhouse[-c(8)]
-eleventhhouse<-eleventhhouse[-c(8)]
-sixteenthhouse<-sixteenthhouse[-c(8)]
-twfirsthouse<-twfirsthouse[-c(8)]
-twsixthhouse<-twsixthhouse[-c(8)]
-
 ##make the members names the first column. 
 
 namesfirst<-function(x){
   x<-cbind(x$members, x[,-7])
+  colnames(x)[1]<-"members"
   return(x)
 }
 
@@ -215,3 +208,47 @@ senate25<-namesfirst(senate25)
 senate26<-namesfirst(senate26)
 senate27<-namesfirst(senate27)
 
+head(house1)
+
+categories.1790<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
+                   'state.division', 'totpop', 'urb790', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2')
+
+categories.1800<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
+                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2')
+
+categories.1810<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
+                   'state.division', 'totpop', 'urb810', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2')
+
+categories.1820<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
+                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2')
+
+categories.1830<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
+                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2')
+
+categories.1840<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
+                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2')
+
+house1<-house1[,categories.1790]
+house2<-house2[,categories.1790]
+house3<-house3[,categories.1790]
+house4<-house4[,categories.1790]
+house5<-house5[,categories.1790]
+house6<-house6[,categories.1790]
+
+house7<-house7[,categories.1800]
+house8<-house8[,categories.1800]
+house9<-house9[,categories.1800]
+house10<-house10[,categories.1800]
+house11<-house11[,categories.1800]
+
+house12<-house12[,categories.1810]
+house13<-house13[,categories.1810]
+house14<-house14[,categories.1810]
+house15<-house15[,categories.1810]
+house16<-house16[,categories.1810]
