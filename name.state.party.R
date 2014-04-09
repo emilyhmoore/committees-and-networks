@@ -267,6 +267,39 @@ house26<-house26[,categories.1830]
 
 house27<-house27[,categories.1840]
 
+senate1<-senate1[,categories.1790]
+senate2<-senate2[,categories.1790]
+senate3<-senate3[,categories.1790]
+senate4<-senate4[,categories.1790]
+senate5<-senate5[,categories.1790]
+senate6<-senate6[,categories.1790]
+
+senate7<-senate7[,categories.1800]
+senate8<-senate8[,categories.1800]
+senate9<-senate9[,categories.1800]
+senate10<-senate10[,categories.1800]
+senate11<-senate11[,categories.1800]
+
+senate12<-senate12[,categories.1810]
+senate13<-senate13[,categories.1810]
+senate14<-senate14[,categories.1810]
+senate15<-senate15[,categories.1810]
+senate16<-senate16[,categories.1810]
+
+senate17<-senate17[,categories.1820]
+senate18<-senate18[,categories.1820]
+senate19<-senate19[,categories.1820]
+senate20<-senate20[,categories.1820]
+senate21<-senate21[,categories.1820]
+
+senate22<-senate22[,categories.1830]
+senate23<-senate23[,categories.1830]
+senate24<-senate24[,categories.1830]
+senate25<-senate25[,categories.1830]
+senate26<-senate26[,categories.1830]
+
+senate27<-senate27[,categories.1840]
+
 head(house27)
 
 categories.1820
