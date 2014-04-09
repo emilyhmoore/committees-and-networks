@@ -223,15 +223,15 @@ categories.1810<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'par
                    'fips', 'statefip', 'region1', 'region2')
 
 categories.1820<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
-                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
-                   'fips', 'statefip', 'region1', 'region2')
+                   'state.division', 'totpop', 'urb820', 'urb25', 'smtot', 'sftot', 'wmtot', 
+                   'fips', 'statefip', 'region1', 'region2','agricul', 'manufact', 'commerce')
 
 categories.1830<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
-                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'state.division', 'totpop', 'urb830', 'urb25', 'stot', 'wmtot', 
                    'fips', 'statefip', 'region1', 'region2')
 
 categories.1840<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
-                   'state.division', 'totpop', 'urb800', 'urb25', 'ofptot', 'stot', 'wmtot', 
+                   'state.division', 'totpop', 'urb840', 'urb25', 'stot', 'wmtot', 
                    'fips', 'statefip', 'region1', 'region2')
 
 house1<-house1[,categories.1790]
@@ -252,3 +252,22 @@ house13<-house13[,categories.1810]
 house14<-house14[,categories.1810]
 house15<-house15[,categories.1810]
 house16<-house16[,categories.1810]
+
+house17<-house17[,categories.1820]
+house18<-house18[,categories.1820]
+house19<-house19[,categories.1820]
+house20<-house20[,categories.1820]
+house21<-house21[,categories.1820]
+
+house22<-house22[,categories.1830]
+house23<-house23[,categories.1830]
+house24<-house24[,categories.1830]
+house25<-house25[,categories.1830]
+house26<-house26[,categories.1830]
+
+house27<-house27[,categories.1840]
+
+head(house27)
+
+categories.1820
+colnames(house17)
