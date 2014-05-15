@@ -8,8 +8,7 @@ library(igraph)
 
 
 ##can currently only accept one congress for one chamber at a time
-congress=27
-senate=FALSE
+
 score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.025){
   ##Congress needs to be altered to have a 0 in front if less than 10
   if (congress<10){congress<-paste("0",congress, sep="")
@@ -59,8 +58,9 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   b<-agree.mat(h.1)
   
   #Make enough names for this process to work
-  enough.names<-rep(just.names,n)
-  repped.names<-rep(just.names,c(rep(n,n)))
+  n<-length(rownames(a))
+  enough.names<-rep(as.numeric(rownames(a)),n)
+  repped.names<-rep(as.numeric(rownames(a)),c(rep(n,n)))
   
   #Set agreement to self to NA
   diag(a)<-NA
@@ -74,7 +74,11 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   ##Get rid of weird na.action attribute
   attr(vector1, "na.action")<-NULL
   
-  ag.scores<-cbind(agreementscores=vector, icpsr1=enough.names, icpsr2=repped.names, congress=rep(congress, length(vector)))
+  ag.scores<-cbind(agreementscores=as.numeric(vector), icpsr1=as.numeric(enough.names), 
+                   icpsr2=as.numeric(repped.names), congress=as.numeric(rep(congress, length(vector))))
+  
+  ag.scores<-na.omit(ag.scores) ##remove agreement with self  
+  rownames(ag.scores)<-NULL
   
   ##Get the adjacency graph for centrality
   G <- graph.adjacency(as.matrix(b),weighted=TRUE)
@@ -82,9 +86,10 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   ## And then this will calculate and display the centrality scores
   centrality<-alpha.centrality(G)
 
-  return(list(agreementscores==ag.scores, centrality=centrality))
+  return(list(agreementscores=ag.scores, centrality=centrality))
 }
 
+score.generator(congress=1, abstain.agree=TRUE, senate=TRUE, lopn=.025)
 
 ##Try out the function
 trial2<-score.generator(congress=1,abstain.agree=FALSE, senate=TRUE)
