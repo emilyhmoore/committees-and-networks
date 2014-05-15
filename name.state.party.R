@@ -76,7 +76,7 @@ colnames(d1840)[c(1,2,4)]<-
 ##telling the congress lists to contain the list of members as a column not just row names.
 
 for (i in 1:27){
-  cong[[i]]$members<-rownames(cong[[i]])
+  #cong[[i]]$members<-rownames(cong[[i]])
   sen[[i]]$members<-rownames(sen[[i]])
 }
 
@@ -208,7 +208,9 @@ senate25<-namesfirst(senate25)
 senate26<-namesfirst(senate26)
 senate27<-namesfirst(senate27)
 
-head(house1)
+house1
+
+house9[,1:3]
 
 categories.1790<-c("members", 'state', 'icpsrState', 'icpsrLegis', 'party', 'partyCode', 
                    'state.division', 'totpop', 'urb790', 'urb25', 'ofptot', 'stot', 'wmtot', 
@@ -300,7 +302,65 @@ senate26<-senate26[,categories.1830]
 
 senate27<-senate27[,categories.1840]
 
+house1$congressnum<-rep(1)
+house2$congressnum<-rep(2)
+house3$congressnum<-rep(3)
+house4$congressnum<-rep(4)
+house5$congressnum<-rep(5)
+house6$congressnum<-rep(6)
+house7$congressnum<-rep(7)
+house8$congressnum<-rep(8)
+house9$congressnum<-rep(9)
+house10$congressnum<-rep(10)
+house11$congressnum<-rep(11)
+house12$congressnum<-rep(12)
+house13$congressnum<-rep(13)
+house14$congressnum<-rep(14)
+house15$congressnum<-rep(15)
+house16$congressnum<-rep(16)
+house17$congressnum<-rep(17)
+house18$congressnum<-rep(18)
+house19$congressnum<-rep(19)
+house20$congressnum<-rep(20)
+house21$congressnum<-rep(21)
+house22$congressnum<-rep(22)
+house23$congressnum<-rep(23)
+house24$congressnum<-rep(24)
+house25$congressnum<-rep(25)
+house26$congressnum<-rep(26)
+house27$congressnum<-rep(27)
+
+senate1$congressnum<-rep(1)
+senate2$congressnum<-rep(2)
+senate3$congressnum<-rep(3)
+senate4$congressnum<-rep(4)
+senate5$congressnum<-rep(5)
+senate6$congressnum<-rep(6)
+senate7$congressnum<-rep(7)
+senate8$congressnum<-rep(8)
+senate9$congressnum<-rep(9)
+senate10$congressnum<-rep(10)
+senate11$congressnum<-rep(11)
+senate12$congressnum<-rep(12)
+senate13$congressnum<-rep(13)
+senate14$congressnum<-rep(14)
+senate15$congressnum<-rep(15)
+senate16$congressnum<-rep(16)
+senate17$congressnum<-rep(17)
+senate18$congressnum<-rep(18)
+senate19$congressnum<-rep(19)
+senate20$congressnum<-rep(20)
+senate21$congressnum<-rep(21)
+senate22$congressnum<-rep(22)
+senate23$congressnum<-rep(23)
+senate24$congressnum<-rep(24)
+senate25$congressnum<-rep(25)
+senate26$congressnum<-rep(26)
+senate27$congressnum<-rep(27)
+
+
 head(house27)
 
 categories.1820
 colnames(house17)
+

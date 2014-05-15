@@ -10,7 +10,7 @@ library(igraph)
 ##can currently only accept one congress for one chamber at a time
 congress=27
 senate=FALSE
-score.generator<-function(congress=1, abstain.agree=TRUE, senate){
+score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.025){
   ##Congress needs to be altered to have a 0 in front if less than 10
   if (congress<10){congress<-paste("0",congress, sep="")
   } else {congress<-as.character(congress)}
@@ -23,12 +23,13 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   }
 
   house<-readKH(file) ##read in the file
-  n<-.025*house$n ##gets n for dropping very lopsided votes
+  n<-lopn*house$n ##gets n for dropping very lopsided votes
+  icpsr<-(house$legis.data$icpsrLegis)
+  rownames(house$votes)<-icpsr
   house<-dropUnanimous(house,lop=n)
   h.1<-house$votes ##Roll Call Votes
-  h.1
   h.1<-h.1[-1,] ##Dropping President
-  if(congress==27){h.1<-h.1[-1,]}
+  if(congress==27){h.1<-h.1[-1,]} ##Dropping president again for this Congress
   h.1[h.1==0]<-NA ##Converting 0s to NAs
   h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
   
@@ -57,17 +58,6 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   a<-agree.mat(h.1)
   b<-agree.mat(h.1)
   
-  ##Set the legnames again
-  legnames<-rownames(a)
-  ##Split names from extra junk
-  legnames1<-unlist(strsplit(legnames,split=" \\("))
-  
-  ##Get rid of the extra junk 2
-  odds<-seq(1,length(legnames1), by=2)
-  just.names<-legnames1[odds]
-  
-  n<-length(just.names)
-  
   #Make enough names for this process to work
   enough.names<-rep(just.names,n)
   repped.names<-rep(just.names,c(rep(n,n)))
@@ -77,15 +67,14 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   
   ##Have a vector of these scores
   vector<-unlist(a)
-  for(i in 1:length(vector)){
-    names(vector)[i]<-paste(repped.names[i],enough.names[i],sep="_")
-  }
-  
+
   ##Remove agreement with self
   vector1<-na.omit(vector)
   
   ##Get rid of weird na.action attribute
   attr(vector1, "na.action")<-NULL
+  
+  ag.scores<-cbind(agreementscores=vector, icpsr1=enough.names, icpsr2=repped.names, congress=rep(congress, length(vector)))
   
   ##Get the adjacency graph for centrality
   G <- graph.adjacency(as.matrix(b),weighted=TRUE)
@@ -93,7 +82,7 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate){
   ## And then this will calculate and display the centrality scores
   centrality<-alpha.centrality(G)
 
-  return(list("agreement.scores"=vector1, "centrality.scores"=centrality, "names"=thenames))
+  return(list(agreementscores==ag.scores, centrality=centrality))
 }
 
 
