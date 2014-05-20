@@ -6,10 +6,9 @@ library(igraph)
 #########IMPORTANT NOTE!!!!!!!!!!!!!!!!!!!!!! There are two different presidents listed 
 #########for congress #27, so you will need to get rid of both!
 
-
 ##can currently only accept one congress for one chamber at a time
 
-score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.025){
+score.generator<-function(congress=5, abstain.agree=TRUE, senate=TRUE, lopn=.3){
   ##Congress needs to be altered to have a 0 in front if less than 10
   if (congress<10){congress<-paste("0",congress, sep="")
   } else {congress<-as.character(congress)}
@@ -27,13 +26,24 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   rownames(house$votes)<-icpsr
   house<-dropUnanimous(house,lop=n)
   h.1<-house$votes ##Roll Call Votes
-  h.1<-h.1[-1,] ##Dropping President
-  if(congress==27){h.1<-h.1[-1,]} ##Dropping president again for this Congress
+  if(senate==FALSE){
+    h.1<-h.1[-1,] ##Dropping President
+    if(congress==27){h.1<-h.1[-1,]} ##Dropping president again for this Congress
+  }
   h.1[h.1==0]<-NA ##Converting 0s to NAs
   h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
   
-  legnames<-rownames(h.1)
-  thenames<-rownames(h.1)
+  ##This is for a weird problem with the 5th senate when the lopsided threshold is that high
+  if(congress=="05" & senate &lopn==.3){
+    legnames<-names(h.1)
+    h.1<-as.numeric(h.1)  
+    h.1<-matrix(h.1, nrow=1) #used this for 5th senate .3 lopside threshold
+    thenames<-legnames
+    colnames(h.1)<-legnames
+  }else{
+    legnames<-rownames(h.1)
+    thenames<-rownames(h.1)
+  }
   agree.mat <- function(X, abstain=abstain.agree){
     X <- t(X) # put subjects on columns
     n <- ncol(X)
@@ -56,7 +66,7 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   ##create two of these since I manipulate them differently
   a<-agree.mat(h.1)
   b<-agree.mat(h.1)
-  
+  colnames(a)
   #Make enough names for this process to work
   n<-length(rownames(a))
   enough.names<-rep(as.numeric(rownames(a)),n)
@@ -65,19 +75,22 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   #Set agreement to self to NA
   diag(a)<-NA
   
+  a[lower.tri(a)]<-NA ##Set these equal to NA so there are no repeats. 
+  
   ##Have a vector of these scores
   vector<-unlist(a)
 
   ##Remove agreement with self
   vector1<-na.omit(vector)
   
-  ##Get rid of weird na.action attribute
-  attr(vector1, "na.action")<-NULL
-  
   ag.scores<-cbind(agreementscores=as.numeric(vector), icpsr1=as.numeric(enough.names), 
                    icpsr2=as.numeric(repped.names), congress=as.numeric(rep(congress, length(vector))))
   
-  ag.scores<-na.omit(ag.scores) ##remove agreement with self  
+  ag.scores<-na.omit(ag.scores) ##remove agreement with self and repeats
+  
+  ##Get rid of weird na.action attribute
+  attr(ag.scores, "na.action")<-NULL
+  
   rownames(ag.scores)<-NULL
   
   ##Get the adjacency graph for centrality
@@ -85,20 +98,65 @@ score.generator<-function(congress=1, abstain.agree=TRUE, senate=FALSE, lopn=.02
   
   ## And then this will calculate and display the centrality scores
   centrality<-alpha.centrality(G)
+  
+  centr<-cbind(as.numeric(centrality), as.numeric(legnames), 
+               congress=rep(as.numeric(congress), length(legnames)))
 
-  return(list(agreementscores=ag.scores, centrality=centrality))
+  return(ag.scores)
 }
 
-score.generator(congress=1, abstain.agree=TRUE, senate=TRUE, lopn=.025)
+##agreement scores##
 
-##Try out the function
-trial2<-score.generator(congress=1,abstain.agree=FALSE, senate=TRUE)
-trial3<-score.generator(congress=1,abstain.agree=FALSE, senate=FALSE)
-trial4<-score.generator(congress=1, abstain.agree=TRUE, senate=TRUE)
-trial5<-score.generator(congress=1, abstain.agree=TRUE, senate=FALSE)
+library(plyr)
+score.generator(5, senate=TRUE, lopn=.3)
 
-agree<-trial3$agreement.scores
-agree2<-trial5$agreement.scores
+senatecentrality<-llply(1:27, score.generator, abstain.agree=TRUE, senate=TRUE, lopn=.025)
+
+senatecentrality<-do.call("rbind",senatecentrality)
+
+senatecentrality<-as.data.frame(senatecentrality)
+
+write.dta(senatecentrality, "senatecentrality.dta")
+
+senateDiffAbstain<-llply(1:27, score.generator, abstain.agree=FALSE, senate=TRUE, lopn=.025)
+
+senateDiffAbstain<-do.call("rbind",senateDiffAbstain)
+senateDiffAbstain<-as.data.frame(senateDiffAbstain)
+
+senateagreescores<-cbind(senateagreescores, senateDiffAbstain=senateDiffAbstain$agreementscores)
+
+senateagreescores<-senateagreescores[,-5]
+
+tail(houseagreescores)
+tail(senateagreescores)
+
+library(foreign)
+write.dta(houseagreescores, "houseagreescores.dta")
+write.dta(senateagreescores, "senateagreescores.dta")
+
+##Centrality
+
+score.generator(27, senate=FALSE, abstain.agree=TRUE, lopn=.025)
+
+senateCentrality<-llply(1:27, score.generator, abstain.agree=TRUE, 
+                       senate=TRUE, lopn=.025)
+
+senateCentrality<-do.call("rbind",senateCentrality)
+
+senateCentrality<-as.data.frame(senateCentrality)
+
+head(senateCentrality)
+colnames(senateCentrality)<-c("centrality","icpsr", "congress")
+
+class(senateCentrality)
+
+tail(senateCentrality)
+
+summary(senateCentrality)
+
+write.dta(senateCentrality, "senateCentrality.dta")
+
+
 
 
 plot(density(agree), col="red") ##any abstention auto treated as disagreement 
