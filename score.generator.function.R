@@ -26,24 +26,25 @@ score.generator<-function(congress=5, abstain.agree=TRUE, senate=TRUE, lopn=.3){
   rownames(house$votes)<-icpsr
   house<-dropUnanimous(house,lop=n)
   h.1<-house$votes ##Roll Call Votes
+  
   if(senate==FALSE){
     h.1<-h.1[-1,] ##Dropping President
     if(congress==27){h.1<-h.1[-1,]} ##Dropping president again for this Congress
   }
+  
   h.1[h.1==0]<-NA ##Converting 0s to NAs
   h.1<-na.omit(h.1) ##Omitting 0s aka Not in Legislature for one or more votes
   
   ##This is for a weird problem with the 5th senate when the lopsided threshold is that high
-  if(congress=="05" & senate &lopn==.3){
-    legnames<-names(h.1)
-    h.1<-as.numeric(h.1)  
-    h.1<-matrix(h.1, nrow=1) #used this for 5th senate .3 lopside threshold
-    thenames<-legnames
-    colnames(h.1)<-legnames
-  }else{
-    legnames<-rownames(h.1)
-    thenames<-rownames(h.1)
-  }
+    #legnames<-names(h.1)
+    #h.1<-as.numeric(h.1)  
+    #h.1<-matrix(h.1, nrow=1) #used this for 5th senate .3 lopside threshold
+    #thenames<-legnames
+    #colnames(h.1)<-legnames
+
+  legnames<-rownames(h.1)
+  thenames<-rownames(h.1)
+
   agree.mat <- function(X, abstain=abstain.agree){
     X <- t(X) # put subjects on columns
     n <- ncol(X)
